@@ -59,6 +59,16 @@ Preferred communication style: Simple, everyday language.
   - Active and completed quizzes
   - Learning paths and preferences
   - Unique user ID (UUID-based)
+  - Current page selection (for stable navigation)
+
+**Navigation Stability**
+- **Challenge**: Streamlit reruns the entire script on user interactions (e.g., clicking radio buttons), which could reset page selection
+- **Solution**: `st.session_state.current_page` persists the active page across reruns
+- **Implementation**:
+  - Sidebar selectbox uses `current_page` as its index value
+  - Page changes update `current_page` and trigger `st.rerun()` for UI sync
+  - Auto-redirect after skill analysis updates `current_page` before rerunning
+- **Benefit**: Users can interact with quizzes (clicking radio buttons) without unexpected navigation
 
 ### Document Processing Pipeline
 
