@@ -57,6 +57,8 @@ def init_session_state():
         st.session_state.redirect_to_quiz = False
     if 'true_skill_match' not in st.session_state:
         st.session_state.true_skill_match = None
+    if 'current_page' not in st.session_state:
+        st.session_state.current_page = "🔍 Analyze Skills"
 
 @st.cache_resource
 def get_components():
@@ -89,19 +91,26 @@ def main():
             st.session_state.selected_country = selected_country
             st.rerun()
         
+        page_options = [
+            "🔍 Analyze Skills", 
+            "🧠 Skill Test Session",
+            "📊 Results Dashboard", 
+            "🎓 Learning Paths",
+            "🤖 Career Advisor", 
+            "📊 Market Trends",
+            "👤 My Profile",
+            "📁 Analysis History"
+        ]
+        
         page = st.selectbox(
             "Choose a section:",
-            [
-                "🔍 Analyze Skills", 
-                "🧠 Skill Test Session",
-                "📊 Results Dashboard", 
-                "🎓 Learning Paths",
-                "🤖 Career Advisor", 
-                "📊 Market Trends",
-                "👤 My Profile",
-                "📁 Analysis History"
-            ]
+            page_options,
+            index=page_options.index(st.session_state.current_page) if st.session_state.current_page in page_options else 0
         )
+        
+        if page != st.session_state.current_page:
+            st.session_state.current_page = page
+            st.rerun()
         
         if st.session_state.analysis_results:
             st.markdown("### 📋 Quick Stats")
@@ -122,7 +131,8 @@ def main():
     
     if st.session_state.redirect_to_quiz:
         st.session_state.redirect_to_quiz = False
-        page = "🧠 Skill Test Session"
+        st.session_state.current_page = "🧠 Skill Test Session"
+        st.rerun()
     
     if page == "🔍 Analyze Skills":
         analyze_skills_page(skill_analyzer, quiz_generator)
